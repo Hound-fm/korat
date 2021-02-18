@@ -41,11 +41,22 @@ def update_popular_stats(stream_type):
 
     df_top_channels = df_top_channels_discover.merge(df_channels, on="publisher_id")
 
+    df_recent_genres = df_popular.explode("genres").dropna(axis="index")
+    df_recent_genres = df_recent_genres.groupby(
+        "genres", as_index=False, sort=False
+    ).first()
+
+    df_recent_tags = df_popular.explode("tags").dropna(axis="index")
+    df_recent_tags = df_recent_tags.groupby("tags", as_index=False, sort=False).first()
+
+    recent_tags = df_recent_tags.head(5).tags.tolist()
+    recent_genres = df_recent_genres.head(5).genres.tolist()
+
     stats = {
         "updated": get_current_time(),
         "data": {
-            "tags": [],
-            "genres": [],
+            "tags": recent_tags,
+            "genres": recent_genres,
             "channels": df_top_channels.to_dict(orient="records"),
         },
     }
