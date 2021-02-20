@@ -3,7 +3,6 @@ from modules.utils import write_json_file, get_current_time
 
 
 def get_usage_df(df, column):
-    # Tags
     df_tags = df.explode(column).dropna(axis="index")
     df_tags = df_tags.rename(columns={f"{column}": "label"})
     df_tags = (
@@ -16,7 +15,6 @@ def get_usage_df(df, column):
 
 
 def update_tags_stats(stream_type):
-    # Connecting to an Elasticsearch instance running on 'localhost:9200'
     df_streams = Elastic().get_df(
         "streams_index",
         [
@@ -31,7 +29,6 @@ def update_tags_stats(stream_type):
         ],
     )
 
-    # Filter by genre
     df_streams = df_streams[df_streams.stream_type == stream_type]
 
     stats = {
