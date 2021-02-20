@@ -41,7 +41,7 @@ def update_tags_stats(stream_type):
 
     stats = {
         "tags": df_tags.to_dict("records"),
-        "genres": df_tags.to_dict("records"),
+        "genres": df_genres.to_dict("records"),
     }
 
     write_json_file(stats, f"stats/tags_frequency_{stream_type}.json")
