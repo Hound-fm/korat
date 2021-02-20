@@ -23,18 +23,20 @@ def update_tags_stats(stream_type):
 
     # Tags
     df_tags = df_streams.explode("tags").dropna(axis="index")
+    df_tags = df_tags.rename(columns={"tags": "label"})
     df_tags = (
-        df_tags.groupby(["tags"], sort=False)
-        .agg(frequency=("tags", "count"), reach=("publisher_id", "nunique"))
+        df_tags.groupby(["label"], sort=False)
+        .agg(frequency=("label", "count"), reach=("publisher_id", "nunique"))
         .reset_index()
     )
     df_tags = df_tags.sort_values(by=["frequency"], ascending=False)
 
     # genres
     df_genres = df_streams.explode("genres").dropna(axis="index")
+    df_genres = df_genres.rename(columns={"genres": "label"})
     df_genres = (
-        df_genres.groupby(["genres"], sort=False)
-        .agg(frequency=("genres", "count"), reach=("publisher_id", "nunique"))
+        df_genres.groupby(["label"], sort=False)
+        .agg(frequency=("label", "count"), reach=("publisher_id", "nunique"))
         .reset_index()
     )
     df_genres = df_genres.sort_values(by=["frequency", "reach"], ascending=False)
