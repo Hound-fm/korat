@@ -2,6 +2,19 @@ from modules.elastic import Elastic
 from modules.utils import write_json_file, get_current_time
 
 
+def get_usage_df(df, column):
+    # Tags
+    df_tags = df.explode(column).dropna(axis="index")
+    df_tags = df_tags.rename(columns={f"{column}": "label"})
+    df_tags = (
+        df_tags.groupby(["label"], sort=False)
+        .agg(frequency=("label", "count"), reach=("publisher_id", "nunique"))
+        .reset_index()
+    )
+    df_tags = df_tags.sort_values(by=["frequency", "reach"], ascending=False)
+    return df_tags
+
+
 def update_tags_stats(stream_type):
     # Connecting to an Elasticsearch instance running on 'localhost:9200'
     df_streams = Elastic().get_df(
@@ -21,29 +34,9 @@ def update_tags_stats(stream_type):
     # Filter by genre
     df_streams = df_streams[df_streams.stream_type == stream_type]
 
-    # Tags
-    df_tags = df_streams.explode("tags").dropna(axis="index")
-    df_tags = df_tags.rename(columns={"tags": "label"})
-    df_tags = (
-        df_tags.groupby(["label"], sort=False)
-        .agg(frequency=("label", "count"), reach=("publisher_id", "nunique"))
-        .reset_index()
-    )
-    df_tags = df_tags.sort_values(by=["frequency"], ascending=False)
-
-    # genres
-    df_genres = df_streams.explode("genres").dropna(axis="index")
-    df_genres = df_genres.rename(columns={"genres": "label"})
-    df_genres = (
-        df_genres.groupby(["label"], sort=False)
-        .agg(frequency=("label", "count"), reach=("publisher_id", "nunique"))
-        .reset_index()
-    )
-    df_genres = df_genres.sort_values(by=["frequency", "reach"], ascending=False)
-
     stats = {
-        "tags": df_tags.to_dict("records"),
-        "genres": df_genres.to_dict("records"),
+        "tags": get_usage_df(df_streams, "tags").to_dict("records"),
+        "genres": get_usage_df(df_streams, "genres").to_dict("records"),
     }
 
     write_json_file(stats, f"stats/tags_frequency_{stream_type}.json")
