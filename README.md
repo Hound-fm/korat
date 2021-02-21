@@ -1,6 +1,8 @@
 # korat
 Friendly stats bot for hound.fm
 
+https://observablehq.com/@btzr-io/hound-fm
+
 # Development
 
 Install all dependencies:
