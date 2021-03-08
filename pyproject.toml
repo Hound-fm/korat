@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "korat"
 version = "0.0.1"
-description = "Friendly stats bot for hound.fm"
+description = "Stats generator for hound.fm"
 authors = ["btzr-io <btzr.io@gmail.com>"]
 license = "MIT"
 packages = [
