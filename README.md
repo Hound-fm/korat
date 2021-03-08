@@ -1,5 +1,5 @@
 # korat
-Friendly stats bot for hound.fm
+Stats generator for hound.fm
 
 https://observablehq.com/@btzr-io/hound-fm
 
