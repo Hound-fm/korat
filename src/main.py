@@ -5,7 +5,7 @@ from modules.popular import update_popular_stats
 
 
 def run():
-    stream_types = ["music", "podcast", "audiobook"]
+    stream_types = ["music", "podcast", "audiobook", "sfx"]
     for type in stream_types:
         update_tags_stats(type)
         update_latest_stats(type)
